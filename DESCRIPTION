@@ -1,0 +1,12 @@
+Package: scanpatterns
+Type: Package
+Title: Set of functions used for working with scan patterns
+Version: 0.1
+Date: 2016-09-14
+Author: Filip Dechterenko <filip.dechterenko@gmail.com>
+Maintainer: Filip Dechterenko <filip.dechterenko@gmail.com>
+Depends: tidyverse
+Suggests: testthat, splancs
+Description: Collection of functions needed for analysis scan patterns
+License: GPL (>=2)
+LazyLoad: false
