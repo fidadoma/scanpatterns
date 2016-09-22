@@ -143,17 +143,17 @@ as.scanpath<-function(eye) {
 #' @param eye.data data.frame of class valid.eyes
 #' @author Filip Dechterenko
 #' @export
-get.eye <- function(eid, etrial, eye.data, xname = "x", yname = "y") {
+get.eye <- function(eid, etrial, eye.data, ...) {
   df.eye <-  dplyr::filter(eye.data, id == eid, trial == etrial)
-  return(as.eye(df.eye))
+  return(as.eye(df.eye,...))
 }
 
-as.eye <- function(df.eye) {
-  stopifnot(length(unique(df.eye$id)) == 1)
-  stopifnot(length(unique(df.eye$trial)) == 1)
+as.eye <- function(df.eye, idname = "id", trialname = "trial", timename = "t", xname = "x", yname = "y") {
+  stopifnot(length(unique(df.eye[[idname]])) == 1)
+  stopifnot(length(unique(df.eye[[trialname]])) == 1)
   
-  eid <- first(df.eye$id)
-  etrial <- first(df.eye$trial)
+  eid <- first(df.eye[[idname]])
+  etrial <- first(df.eye[[trialname]])
   eye <- list()
   class(eye) <- "eye"
   
@@ -162,8 +162,8 @@ as.eye <- function(df.eye) {
   #print(tr.id)
   
   if(get("max-time", pkg_globals) == -1) {
-    min.time <- min(df.eye$time)
-    max.time <- max(df.eye$time)
+    min.time <- min(df.eye[[timename]])
+    max.time <- max(df.eye[[timename]])
     etime <- seq(from = min.time, to = max.time, length.out = nrow(df.eye))
   } else {
     etime <- seq(from = get("min-time", pkg_globals),to=get("max-time", pkg_globals), by = get("step-time", pkg_globals))
@@ -172,8 +172,8 @@ as.eye <- function(df.eye) {
   
   eye$xyt <- as.data.frame(matrix(nrow = length(etime), ncol = 3))
   eye$xyt[,3] <- etime
-  eye$xyt[etime %in% df.eye$time, 1] <- df.eye[[xname]]
-  eye$xyt[etime %in% df.eye$time, 2] <- df.eye[[yname]]
+  eye$xyt[etime %in% df.eye[[timename]], 1] <- df.eye[[xname]]
+  eye$xyt[etime %in% df.eye[[timename]], 2] <- df.eye[[yname]]
   #data.frame(eye.x=tmp.df$X,eye.y=tmp.df$Y)
   row.names(eye$xyt) <- NULL
   colnames(eye$xyt) <- c("x","y","t")
