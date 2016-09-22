@@ -145,6 +145,15 @@ as.scanpath<-function(eye) {
 #' @export
 get.eye <- function(eid, etrial, eye.data, xname = "x", yname = "y") {
   df.eye <-  dplyr::filter(eye.data, id == eid, trial == etrial)
+  return(as.eye(df.eye))
+}
+
+as.eye <- function(df.eye) {
+  stopifnot(length(unique(df.eye$id)) == 1)
+  stopifnot(length(unique(df.eye$trial)) == 1)
+  
+  eid <- first(df.eye$id)
+  etrial <- first(df.eye$trial)
   eye <- list()
   class(eye) <- "eye"
   
@@ -159,7 +168,7 @@ get.eye <- function(eid, etrial, eye.data, xname = "x", yname = "y") {
   } else {
     etime <- seq(from = get("min-time", pkg_globals),to=get("max-time", pkg_globals), by = get("step-time", pkg_globals))
   }
-
+  
   
   eye$xyt <- as.data.frame(matrix(nrow = length(etime), ncol = 3))
   eye$xyt[,3] <- etime

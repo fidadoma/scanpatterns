@@ -244,3 +244,17 @@ frechet_distance <- function(eye1, eye2) {
   }
   return(ca[n,m])
 }
+
+create_grid <- function(gridsize = 0.25, minx = -15, maxx = 15, miny = -15, maxy = 15){
+  xAOI <- seq(minx, maxx, by = gridsize)
+  yAOI <- seq(miny, maxy, by = gridsize)
+  nx   <- length(xAOI)
+  ny   <- length(yAOI)
+  a <- rawToChar(as.raw(1:nx+as.numeric(charToRaw("a"))-1)) %>% strsplit("") %>% unlist()
+  b <- rawToChar(as.raw(1:nx+as.numeric(charToRaw("a"))-1)) %>% strsplit("") %>% unlist()
+  gr <- expand.grid(a,b, stringsAsFactors = F) %>% as_data_frame() %>% transmute(chr = stringr::str_c(Var1,Var2)) 
+  xy <- expand.grid(xAOI, yAOI) %>% transmute(x = Var1, y = Var2)
+  
+  gr <- gr %>% mutate(ix = 1:n()) %>% cbind(xy) # grid computed
+  return(gr)
+}
