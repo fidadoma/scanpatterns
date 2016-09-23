@@ -149,7 +149,7 @@ get.eye <- function(eid, etrial, eye.data, ...) {
 }
 
 as.eye <- function(df.eye, idname = "id", trialname = "trial", timename = "t", xname = "x", yname = "y") {
-  stopifnot(length(setdiff(c(idname,trialname,xname,yname,tname),colnames(lr1))) == 0)
+  stopifnot(length(setdiff(c(idname,trialname, xname, yname, tname), colnames(lr1))) == 0)
   stopifnot(length(unique(df.eye[[idname]])) == 1)
   stopifnot(length(unique(df.eye[[trialname]])) == 1)
   
