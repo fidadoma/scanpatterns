@@ -82,7 +82,7 @@ bin.trajectory <- function(spath) {
   sy1 <- round(sy * xyfac) / xyfac;
   st1 <- round(st * tfac) / tfac;
     
-  df <- data.frame(sx1, sy1, st1, value <- 1)
+  df <- data.frame(sx1, sy1, st1, value = 1)
   df2 <- df %>% group_by(sx1, sy1, st1) %>% summarise(value = sum(value))
   return(df2)
 }
