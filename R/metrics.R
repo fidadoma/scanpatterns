@@ -209,7 +209,7 @@ correlation_distance <- function(eye1, eye2) {
   
   SV1 <- smooth.space(sp1, G)
   SV2 <- smooth.space(sp2, G)
-  cd <- cor(c(SV1$data),c(SV2$data))
+  cd <- .cdm(c(SV1$data),c(SV2$data))
   return(cd)
 }
 
