@@ -199,16 +199,21 @@ levenhstein_distance <- function(eye1, eye2, gr) {
 }
 
 correlation_distance <- function(eye1, eye2) {
-  df1 <- eye1$xyt
-  df1 <- eye1$xyt
-  
-  G <- gaussian.mask()
-  
-  sp1 <- as.scanpath(eye1)
-  sp2 <- as.scanpath(eye2)
-  
-  SV1 <- smooth.space(sp1, G)
-  SV2 <- smooth.space(sp2, G)
+  if (class(eye1) == "space" & class(eye2) == "space") {
+    SV1 <- eye1
+    SV2 <- eye2
+    
+  } else {
+    G <- gaussian.mask()
+    if(class(eye1) == "eye") {
+      sp1 <- as.scanpath(eye1)  
+      SV1 <- smooth.space(sp1, G)
+    } else { # class of eye2 is eye
+      sp2 <- as.scanpath(eye2)
+      SV2 <- smooth.space(sp2, G)
+    }
+  }
+ 
   cd <- .cdm(c(SV1$data),c(SV2$data))
   return(cd)
 }
