@@ -167,7 +167,7 @@ median_distance <- function(eye1, eye2) {
 #' @export
 #'
 #' @examples
-levenhstein_distance <- function(eye1, eye2, gr) {
+levenhstein_distance <- function(eye1, eye2, gr, treat_missing = "spec_char") {
   df1 <- eye1$xyt 
   df2 <- eye2$xyt 
   
@@ -184,6 +184,12 @@ levenhstein_distance <- function(eye1, eye2, gr) {
   n <- length(s1)
   m <- length(s2)
   d <- matrix(data = rep(-1, n*m), nrow = n, ncol = m)
+  
+  if(treat_missing == "spec_char") {
+    s1[is.na(s1)] <- ".."
+    s2[is.na(s2)] <- ".."
+  }
+  
   for (i in 2:n) {
     d[i,1] = d[i-1,1] + 1
   }
@@ -207,13 +213,20 @@ correlation_distance <- function(eye1, eye2) {
     G <- gaussian.mask()
     if(class(eye1) == "eye") {
       sp1 <- as.scanpath(eye1)  
+      if(max(abs(sp1$x)) > 15 | max(abs(sp1$y)) > 15){
+        return(NA)
+      }
       SV1 <- smooth.space(sp1, G)
-    } else { # class of eye2 is eye
+    }
+    if(class(eye2) == "eye") { # class of eye2 is eye
       sp2 <- as.scanpath(eye2)
+      if(max(abs(sp2$x)) > 15 | max(abs(sp2$y)) > 15){
+        return(NA)
+      }
       SV2 <- smooth.space(sp2, G)
     }
   }
- 
+  
   cd <- .cdm(c(SV1$data),c(SV2$data))
   return(cd)
 }
