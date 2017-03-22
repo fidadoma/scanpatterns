@@ -63,15 +63,13 @@ generate.random.eye <- function(id = NULL, trial = NULL, track.id, t = 1000, are
   
   eye$time <- 1:t
   
-  eye$xy <- data.frame(x,y)
+  eye$xyt <- data.frame(x,y,1:t)
   
-  row.names(eye$xy) <- NULL
-  colnames(eye$xy)=c("eye.x","eye.y")
+  row.names(eye$xyt) <- NULL
+  colnames(eye$xyt)=c("x","y","t")
   
-  eye$arena.width  <- 15
-  eye$arena.height <- 15
-  
-  
+  attr(eye, which = "arena.width")  <- get("arenamax", pkg_globals)
+  attr(eye, which = "arena.height") <- get("arenamax", pkg_globals)
   
   stopifnot(is.valid.eye(eye))
   return(eye)
