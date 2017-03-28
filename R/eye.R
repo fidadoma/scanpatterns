@@ -33,7 +33,7 @@ print.eye<-function(eye) {
 #' @param eye an object of class eye
 #' @author Filip Dechterenko
 #' @export
-plot.eye<-function(eye) {
+plot.eye<-function(eye, side_by_side = F) {
   # helper function to extract legend
   g_legend<-function(a.gplot){
     tmp <- ggplot_gtable(ggplot_build(a.gplot))
@@ -69,11 +69,17 @@ plot.eye<-function(eye) {
     scale_y_continuous("y (in deg)",breaks = round(seq(-ar.h, ar.h, by = 5),1),limits=c(-ar.h,ar.h))+
     guides(col = guide_legend(nrow=4))
   
-  
+  if (side_by_side) {
+    n_col <- 3
+  } else {
+    n_col <- 2
+  }
+    
+    
   grid.arrange(arrangeGrob(p.xy + theme(legend.position = "none"),
                            p.tx + theme(legend.position = "none"),
                            p.ty + theme(legend.position = "none"),
-                           ncol = 2))
+                           ncol = n_col))
   
 }
 #' Tests if object is of class eye
