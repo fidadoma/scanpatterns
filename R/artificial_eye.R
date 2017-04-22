@@ -1,3 +1,19 @@
+#' Generates random scan pattern as random walk
+#'
+#' @param id this parameter normally denotes id of the subject, here it can be used for defining the variability
+#' @param trial this parameter normally denotes id of the trial, here it can be used for defining the variability
+#' @param track.id this parameter normally denotes id of the trajectory, here it can be used for defining the variability
+#' @param t max time coordinate. Default 1000
+#' @param arenamin min coordinates for arena (assuming rectangular coordinates)
+#' @param arenamax min coordinates for arena (assuming rectangular coordinates)
+#' @param interp.fac interpolation factor. Default 1 (no interpolation between samples). Larger number denotes number of samples that are created between the generated samples.
+#' @param starting.point starting point for random walk. Default is center c(0,0)
+#' @param sigma 2x2 matrix setting standard deviation for bivariate Gaussian distribution, default is 0.05 * I, where I is an identity matrix
+#'
+#' @return
+#' @export
+#'
+#' @examples
 generate.random.eye <- function(id = NULL, trial = NULL, track.id, t = 1000, arenamin = -15, arenamax = 15, interp.fac = 1, starting.point = c(0,0), sigma = matrix(c(0.05, 0, 0, 0.05), 2, 2)) {
   if(any(starting.point<arenamin) | any(starting.point>arenamax)) {warning("starting point is outside arena, it is not ensured that it will converge",immediate.=T)}
   if(t < 2) {stop("t should be greater than 1")}
@@ -58,6 +74,18 @@ generate.random.eye <- function(id = NULL, trial = NULL, track.id, t = 1000, are
   return(eye)
 }
 
+
+#' Saves all random scan patterns as eye objects and stm objects into file for faster calculations
+#' @note This function will be removed in the future as it is too specific
+#' @param traj list with generated scan patterns
+#' @param spaces.dir output dir for stm maps, default is taken from the package
+#' @param eye.dir ouput dir for eye.dir, default is taken from the package
+#' @param verbose whether the function should be verbose
+#'
+#' @return
+#' @export
+#'
+#' @examples
 save.spaces.and.eye <- function(traj, spaces.dir = NULL, eye.dir = NULL, verbose=T){
   
   stopifnot(max(laply(traj,function(e) max(e$xyt[,c("x","y")]))) < get("arenamax", pkg_globals))
@@ -101,6 +129,16 @@ save.spaces.and.eye <- function(traj, spaces.dir = NULL, eye.dir = NULL, verbose
   }, .progress = progress)
 }
 
+
+#' Creates filename for object for saving
+#'
+#' @param var1 object for which the name will be generated
+#' @param ... additional parameters that are passed to the next function in the case when the object is not of type eye
+#'
+#' @return
+#' @export
+#'
+#' @examples
 create.filename.eye_V_SV <- function(var1, ...) {
   if (class(var1) == "eye") {
     return(create.filename.eye_V_SV2(var1$id, var1$trial, var1$track.id, ...))
@@ -109,12 +147,27 @@ create.filename.eye_V_SV <- function(var1, ...) {
     return(create.filename.eye_V_SV2(var1, ...))
   }
 }
+
+
+#' Creates filename for object for saving
+#'  @description General function for any object 
+#'
+#' @param id id part of the name
+#' @param trial trial part of the name 
+#' @param track.id track.id part of the name
+#' @param eye.dir ouptu directory
+#' @param type type of the object (first part of the name)
+#'
+#' @return
+#' @export
+#'
+#' @examples
 create.filename.eye_V_SV2<-function(id, trial, track.id, eye.dir = NULL, type = "eye-") {
   if (is.null(eye.dir)) {
     eye.dir <- get("eye-dir", pkg_globals)
   }
   
-    return(file.path(eye.dir, sprintf("%s%d-%.2f-%.2f.RData", type, id, trial, track.id)))
+  return(file.path(eye.dir, sprintf("%s%d-%.2f-%.2f.RData", type, id, trial, track.id)))
     
   
 }
