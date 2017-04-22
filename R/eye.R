@@ -25,6 +25,7 @@ print.eye<-function(eye) {
   cat("  ",head(t),"...","",last(t),"\n")
     
 }
+
 #' Visualize an eye object
 #' 
 #' @description
@@ -344,8 +345,8 @@ describe.eye<-function(eye) {
                      track.id = eye$track.id,
                      mean.x = mean(xyt$x, na.rm = T),
                      mean.y = mean(xyt$y, na.rm = T),
-                     sd.x   = mean(xyt$x, na.rm = T),
-                     sd.y   = mean(xyt$y, na.rm = T),
+                     sd.x   = sd(xyt$x, na.rm = T),
+                     sd.y   = sd(xyt$y, na.rm = T),
                      max.x  = max(xyt$x, na.rm = T),
                      max.y  = max(xyt$y, na.rm = T),
                      min.x  = min(xyt$x, na.rm = T),
@@ -359,8 +360,8 @@ describe.eye<-function(eye) {
                      trial = eye$trial,
                      mean.x = mean(xyt$x, na.rm = T),
                      mean.y = mean(xyt$y, na.rm = T),
-                     sd.x   = mean(xyt$x, na.rm = T),
-                     sd.y   = mean(xyt$y, na.rm = T),
+                     sd.x   = sd(xyt$x, na.rm = T),
+                     sd.y   = sd(xyt$y, na.rm = T),
                      max.x  = max(xyt$x, na.rm = T),
                      max.y  = max(xyt$y, na.rm = T),
                      min.x  = min(xyt$x, na.rm = T),
@@ -395,7 +396,7 @@ move.eye <- function(eye, delta.x = 0, delta.y = 0) {
 #' @param eye an object of class eye
 #' @param dist distance from the origin, default=0
 #' @param angle argument specifying rotation from the top,default=0
-#' @param deg are we using degrees or radians? Defualt are degrees
+#' @param deg are we using degrees or radians? Default are degrees
 #' @author Filip Dechterenko
 #' @export
 move.eye.polar<-function(eye, dist = 0, angle = 0, deg = T) {
