@@ -7,7 +7,7 @@
 #' Computes nss distance metric 
 #' @description
 #' Computes nss distance metric for eye object against spatiotemporal map
-#' @param V scanpathwhich will be tested
+#' @param V scanpath which will be tested (or stm map)
 #' @param SV stm map
 #' @author Filip Dechterenko
 #' @export
@@ -212,15 +212,19 @@ correlation_distance <- function(eye1, eye2) {
   } else {
     G <- gaussian.mask()
     if(class(eye1) == "eye") {
+      ar.w <- attr(eye1,"arena.width")
+      ar.h <- attr(eye1,"arena.height")
       sp1 <- as.scanpath(eye1)  
-      if(max(abs(sp1$x)) > 15 | max(abs(sp1$y)) > 15){
+      if(max(abs(sp1$x)) > ar.w | max(abs(sp1$y)) > ar.h){
         return(NA)
       }
       SV1 <- smooth.space(sp1, G)
     }
     if(class(eye2) == "eye") { # class of eye2 is eye
+      ar.w <- attr(eye2,"arena.width")
+      ar.h <- attr(eye2,"arena.height")
       sp2 <- as.scanpath(eye2)
-      if(max(abs(sp2$x)) > 15 | max(abs(sp2$y)) > 15){
+      if(max(abs(sp2$x)) > ar.w | max(abs(sp2$y)) > ar.h){
         return(NA)
       }
       SV2 <- smooth.space(sp2, G)
@@ -233,6 +237,15 @@ correlation_distance <- function(eye1, eye2) {
 
 
 
+#' Computes Fréchet distance between two scan patterns
+#'
+#' @param eye1 Eye object
+#' @param eye2 Eye object
+#'
+#' @return
+#' @export
+#'
+#' @examples
 frechet_distance <- function(eye1, eye2) {
   df1 <- eye1$xyt 
   df2 <- eye2$xyt 
@@ -241,19 +254,16 @@ frechet_distance <- function(eye1, eye2) {
   xy1 <- df1 %>% select(x,y) %>% as.matrix()
   xy2 <- df2 %>% select(x,y) %>% as.matrix()
   distm <- pdist(xy1,xy2)
-  #eucdist <- function(i,j){
-  #  return(sqrt((df1$x[i] - df2$x[j])^2 + (df1$y[i] - df2$y[j])^2))
-  #}
   
   n  <- nrow(df1)
   m  <- nrow(df2)
   ca <- matrix(data = rep(-1, n * m), nrow = n, ncol = m)
   ca[1,1] <- distm[1, 1]
   for (i in 2:n) {
-    ca[i,1] <- max(ca[i - 1, 1], distm[i,1])#eucdist(i, 1))
+    ca[i,1] <- max(ca[i - 1, 1], distm[i,1])
   }
   for (j in 2:m) {
-    ca[1,j] <- max(ca[1, j - 1], distm[1,j])#eucdist(1, j))
+    ca[1,j] <- max(ca[1, j - 1], distm[1,j])
   }
   for (i in 2:n) {
     for (j in 2:m) {
@@ -263,6 +273,19 @@ frechet_distance <- function(eye1, eye2) {
   return(ca[n,m])
 }
 
+
+#' Creates grid for Levenshtein metric
+#'
+#' @param gridsize 
+#' @param minx 
+#' @param maxx 
+#' @param miny 
+#' @param maxy 
+#'
+#' @return
+#' @export
+#'
+#' @examples
 create_grid <- function(gridsize = 0.25, minx = -15, maxx = 15, miny = -15, maxy = 15){
   xAOI <- seq(minx, maxx, by = gridsize)
   yAOI <- seq(miny, maxy, by = gridsize)
