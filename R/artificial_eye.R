@@ -1,4 +1,3 @@
-#source("~/lib/eye.R")
 
 
 load.all.artificial.eye <- function(eye.dir = NULL) {
@@ -77,8 +76,8 @@ generate.random.eye <- function(id = NULL, trial = NULL, track.id, t = 1000, are
 
 save.spaces.and.eye <- function(traj, spaces.dir = NULL, eye.dir = NULL, verbose=T){
   
-  stopifnot(max(laply(traj,function(e) max(e$xy))) < get("arenamax", pkg_globals))
-  stopifnot(min(laply(traj,function(e) min(e$xy))) > get("arenamin", pkg_globals))
+  stopifnot(max(laply(traj,function(e) max(e$xyt[,c("x","y")]))) < get("arenamax", pkg_globals))
+  stopifnot(min(laply(traj,function(e) min(e$xyt[,c("x","y")]))) > get("arenamin", pkg_globals))
   
   if(is.null(spaces.dir)){
     spaces.dir <- get("spaces-dir", pkg_globals)
