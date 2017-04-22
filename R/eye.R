@@ -216,7 +216,8 @@ as.eye <- function(df.eye, idname = "id", trialname = "trial", timename = "t", x
 
 #' Loads an eye object from file
 #' @description
-#' Loads eye object from RData file specified by id and trial. Pth to the directory with eye objects can be specified, or it uses default value from global parameters
+#' Loads eye object from RData file specified by id and trial. Pth to the directory with eye objects can be specified, or it uses default value from global parameters.
+#' Eyes objects are expected to be stored in file eye%d_%d where first number is id and second is trial. If not, use function load.eye2 instead
 #' @param id integer specifying participant
 #' @param tr integer specifying trial
 #' @param eye.dir optional parametr specifying path to the eye data. If missing, default value is used
