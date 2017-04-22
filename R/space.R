@@ -480,7 +480,7 @@ flip.space <- function(V, type = 1) {
 #' Moves spatiotemporal map
 #' @description
 #' Moves spatiotemporal map by x and/or y coordinates
-#' @param SV spatiotemporal object which will be moevd
+#' @param SV spatiotemporal object which will be moved
 #' @param dir.x integer meaning how many bins we should move in x axis
 #' @param dir.y integer meaning how many bins we should move in y axis
 #' @author Filip Dechterenko
