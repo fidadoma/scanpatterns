@@ -214,41 +214,6 @@ as.eye <- function(df.eye, idname = "id", trialname = "trial", timename = "t", x
   return(eye)
 }
 
-is.convertible.to.eye <- function(df.eye, idname = "id", trialname = "trial", timename = "time", xname ="x", yname = "y") {
-  
-  eye <- list()
-  class(eye) <- "eye"
-  if(length(unique(df.eye[[idname]])) != 1){
-    return(F)
-  }
-  eye$id <- unique(df.eye$id)
-  
-  if(length(unique(df.eye[[trialname]])) != 1){
-    return(F)
-  }
-  eye$trial <- unique(df.eye[[trialname]])
-  
-  etime <- seq(from = get("min-time", pkg_globals),
-               to = get("max-time", pkg_globals),
-               by = get("step-time", pkg_globals))
-  
-  eye$xyt <- as.data.frame(matrix(nrow = length(etime), ncol = 3))
-  eye$xyt[,3] <- etime
-  eye$xyt[etime %in% df.eye[[timename]], 1] <- df.eye[[xname]]
-  eye$xyt[etime %in% df.eye[[timename]], 2] <- df.eye[[yname]]
-  
-  row.names(eye$xyt) <- NULL
-  colnames(eye$xyt)=c("x", "y", "t")
-  
-  attr(eye, which = "arena.width")  <- get("arenamax", pkg_globals)
-  attr(eye, which = "arena.height") <- get("arenamax", pkg_globals)
-  
-  
-  
-  return(is.valid.eye(eye))
-
-}
-
 #' Loads an eye object from file
 #' @description
 #' Loads eye object from RData file specified by id and trial. Pth to the directory with eye objects can be specified, or it uses default value from global parameters
