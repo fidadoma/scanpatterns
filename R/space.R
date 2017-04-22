@@ -395,13 +395,6 @@ normalize.space <- function(V) {
   return(V)
 }
 
-#normalize.space.per.slice<-function(V) {
-#  for (i in 1:(dim(V$data)[3])){
-#    V$data[,,i]=(V$data[,,i]-mean(V$data[,,i]))/sd(V$data[,,i])
-#  }
-#  return(V)
-#}
-
 #' Loads spatiotemporal map
 #' @description
 #' Loads spatiotemporal map (stm) from file based on id, trial and optionaly directory, where are stm stored
