@@ -1,19 +1,3 @@
-
-
-load.all.artificial.eye <- function(eye.dir = NULL) {
-  if(is.null(eye.dir)) {
-    eye.dir = get("eye-dir", pkg_globals)
-  }
-  file.names <- dir(path, full.names=T)
-  l <- list()
-  for (f in file.names) {
-    load(f) # object traj loaded
-    l <- c(l,traj)
-  }
-  return(l)
-}
-
-
 generate.random.eye <- function(id = NULL, trial = NULL, track.id, t = 1000, arenamin = -15, arenamax = 15, interp.fac = 1, starting.point = c(0,0), sigma = matrix(c(0.05, 0, 0, 0.05), 2, 2)) {
   if(any(starting.point<arenamin) | any(starting.point>arenamax)) {warning("starting point is outside arena, it is not ensured that it will converge",immediate.=T)}
   if(t < 2) {stop("t should be greater than 1")}
