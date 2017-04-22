@@ -56,18 +56,21 @@ plot.eye<-function(eye, side_by_side = F) {
     geom_path(size=0.8)+
     ggtitle(paste0("Eye - id: ", eye$id, ", trial: ", eye$trial))+
     scale_x_continuous("x (in deg)",breaks = round(seq(-ar.w, ar.w, by = 5),1),limits=c(-ar.w,ar.w))+
-    scale_y_continuous("y (in deg)",breaks = round(seq(-ar.h, ar.h, by = 5),1),limits=c(-ar.h,ar.h))
+    scale_y_continuous("y (in deg)",breaks = round(seq(-ar.h, ar.h, by = 5),1),limits=c(-ar.h,ar.h)) + 
+    theme(aspect.ratio = 1)
   p.tx <- ggplot(xyt,aes(x = t,y = x))+
     geom_path(size=0.8)+
     ggtitle("x in time")+
     scale_x_continuous("time (in s)")+
-    scale_y_continuous("x (in deg)",breaks = round(seq(-ar.w, ar.w, by = 5),1),limits=c(-ar.w,ar.w))
+    scale_y_continuous("x (in deg)",breaks = round(seq(-ar.w, ar.w, by = 5),1),limits=c(-ar.w,ar.w)) + 
+    theme(aspect.ratio = 1)
   p.ty <- ggplot(xyt,aes(x = t, y = y))+
     geom_path(size=0.8)+
     ggtitle("y in time")+
-    scale_x_continuous("time (in s)")+
+    scale_x_continuous("time (in s)") +
     scale_y_continuous("y (in deg)",breaks = round(seq(-ar.h, ar.h, by = 5),1),limits=c(-ar.h,ar.h))+
-    guides(col = guide_legend(nrow=4))
+    guides(col = guide_legend(nrow=4)) + 
+    theme(aspect.ratio = 1)
   
   if (side_by_side) {
     n_col <- 3
@@ -154,8 +157,26 @@ get.eye <- function(eid, etrial, eye.data, ...) {
   return(as.eye(df.eye,...))
 }
 
+#' Converts data frame to eye object
+#' @description 
+#' Data frame should contain data only with one id and one trial, otherwise it stops. This is a ideal function to by used with dplyr pipeline.
+#'
+#' @param df.eye data frame that will be converted to eye object
+#' @param idname name of column that should be treated as id
+#' @param trialname name of column that should be treated as trial id
+#' @param timename name of column that should be treated as time coordinate
+#' @param xname name of column that should be treated as x coordinate
+#' @param yname name of column that should be treated as y coordinate
+#'
+#' @return
+#' object of type eye
+#' @export
+#'
+#' @examples
+#' scanpatterns.set.parameters(list("max-time" = 40))
+#' df <- data_frame(id = rep(1, 10), trial = rep(4,10), t = seq(1, 40, by = 4), x = runif(10, -5, 5), y = runif(10, -5, 5))
 as.eye <- function(df.eye, idname = "id", trialname = "trial", timename = "t", xname = "x", yname = "y") {
-  stopifnot(length(setdiff(c(idname,trialname, xname, yname, timename), colnames(lr1))) == 0)
+  stopifnot(length(setdiff(c(idname,trialname, xname, yname, timename), colnames(df.eye))) == 0)
   stopifnot(length(unique(df.eye[[idname]])) == 1)
   stopifnot(length(unique(df.eye[[trialname]])) == 1)
   
@@ -181,7 +202,7 @@ as.eye <- function(df.eye, idname = "id", trialname = "trial", timename = "t", x
   eye$xyt[,3] <- etime
   eye$xyt[etime %in% df.eye[[timename]], 1] <- df.eye[[xname]]
   eye$xyt[etime %in% df.eye[[timename]], 2] <- df.eye[[yname]]
-  #data.frame(eye.x=tmp.df$X,eye.y=tmp.df$Y)
+  
   row.names(eye$xyt) <- NULL
   colnames(eye$xyt) <- c("x","y","t")
   
@@ -351,21 +372,39 @@ describe.eye<-function(eye) {
   ok <- complete.cases(eye$xyt$x, eye$xyt$y)
   
   xyt <- eye$xyt
-  
-  df <- data_frame(id = eye$id,
-                  trial = eye$trial,
-                  mean.x = mean(xyt$x, na.rm = T),
-                  mean.y = mean(xyt$y, na.rm = T),
-                  sd.x   = mean(xyt$x, na.rm = T),
-                  sd.y   = mean(xyt$y, na.rm = T),
-                  max.x  = max(xyt$x, na.rm = T),
-                  max.y  = max(xyt$y, na.rm = T),
-                  min.x  = min(xyt$x, na.rm = T),
-                  min.y  = min(xyt$y, na.rm = T),
-                  conv.hull       = cha(xyt$x[ok], xyt$y[ok]),
-                  mean.difference = mean(dist.between(xyt$x, xyt$y), na.rm = T),
-                  sd.difference   = sd(dist.between(xyt$x, xyt$y), na.rm = T),
-                  total.length    = sum(dist.between(xyt$x, xyt$y), na.rm = T))
+  if("track.id" %in% names(eye)) {
+    df <- data_frame(id = eye$id,
+                     trial = eye$trial,
+                     track.id = eye$track.id,
+                     mean.x = mean(xyt$x, na.rm = T),
+                     mean.y = mean(xyt$y, na.rm = T),
+                     sd.x   = mean(xyt$x, na.rm = T),
+                     sd.y   = mean(xyt$y, na.rm = T),
+                     max.x  = max(xyt$x, na.rm = T),
+                     max.y  = max(xyt$y, na.rm = T),
+                     min.x  = min(xyt$x, na.rm = T),
+                     min.y  = min(xyt$y, na.rm = T),
+                     conv.hull       = cha(xyt$x[ok], xyt$y[ok]),
+                     mean.difference = mean(dist.between(xyt$x, xyt$y), na.rm = T),
+                     sd.difference   = sd(dist.between(xyt$x, xyt$y), na.rm = T),
+                     total.length    = sum(dist.between(xyt$x, xyt$y), na.rm = T))
+  } else {
+    df <- data_frame(id = eye$id,
+                     trial = eye$trial,
+                     mean.x = mean(xyt$x, na.rm = T),
+                     mean.y = mean(xyt$y, na.rm = T),
+                     sd.x   = mean(xyt$x, na.rm = T),
+                     sd.y   = mean(xyt$y, na.rm = T),
+                     max.x  = max(xyt$x, na.rm = T),
+                     max.y  = max(xyt$y, na.rm = T),
+                     min.x  = min(xyt$x, na.rm = T),
+                     min.y  = min(xyt$y, na.rm = T),
+                     conv.hull       = cha(xyt$x[ok], xyt$y[ok]),
+                     mean.difference = mean(dist.between(xyt$x, xyt$y), na.rm = T),
+                     sd.difference   = sd(dist.between(xyt$x, xyt$y), na.rm = T),
+                     total.length    = sum(dist.between(xyt$x, xyt$y), na.rm = T))
+    
+  }
            
   return(df)
 }
