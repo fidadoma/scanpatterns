@@ -204,6 +204,15 @@ levenhstein_distance <- function(eye1, eye2, gr, treat_missing = "spec_char") {
   return((d[n,m]+1)/max(n,m))
 }
 
+#' Computes correlation distance
+#'
+#' @param eye1 - object of class eye
+#' @param eye2 - object of class eye 
+#'
+#' @return
+#' @export
+#'
+#' @examples
 correlation_distance <- function(eye1, eye2) {
   if (class(eye1) == "space" & class(eye2) == "space") {
     SV1 <- eye1
@@ -239,8 +248,8 @@ correlation_distance <- function(eye1, eye2) {
 
 #' Computes Fréchet distance between two scan patterns
 #'
-#' @param eye1 Eye object
-#' @param eye2 Eye object
+#' @param eye1 - object of class eye
+#' @param eye2 - object of class eye 
 #'
 #' @return
 #' @export
@@ -276,11 +285,11 @@ frechet_distance <- function(eye1, eye2) {
 
 #' Creates grid for Levenshtein metric
 #'
-#' @param gridsize 
-#' @param minx 
-#' @param maxx 
-#' @param miny 
-#' @param maxy 
+#' @param gridsize size in degrees of one AOI
+#' @param minx minimum value of x, default is -15
+#' @param maxx maximum value of x,default is 15
+#' @param miny minimum value of y, default is -15
+#' @param maxy maximum value of y,default is 15
 #'
 #' @return
 #' @export
